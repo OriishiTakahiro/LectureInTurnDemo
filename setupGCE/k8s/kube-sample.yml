@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-  namespace: ex6
 spec:
   replicas: 1
   selector:
@@ -25,7 +24,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: memcached-deployment
-  namespace: ex6
 spec:
   replicas: 1
   selector:
@@ -46,7 +44,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis-deployment
-  namespace: ex6
 spec:
   replicas: 1
   selector:
@@ -67,7 +64,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: httpd-deployment
-  namespace: ex6
 spec:
   replicas: 1
   selector:

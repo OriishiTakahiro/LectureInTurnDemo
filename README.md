@@ -11,3 +11,16 @@ useradd foo
 cat /etc/passwd | grep foo
 visudo  # add new line "foo ALL=(ALL)"
 ```
+
+# Setup environment  
+
+```sh
+cp ${YOUR_GCP_CREDENTIAL_JSON_FILE} ../credential
+cd setupGCE/image_build
+vim base.json             # modify account_file
+vim assets/gotty.sh       # modify GOTTY_USER and GOTTY_PASS
+packer build base.json    # get image name
+../terraform
+vim vars.tf               # modify name, cred_file and image of proj
+terraform apply
+```
