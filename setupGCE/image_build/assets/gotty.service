@@ -1,0 +1,11 @@
+[Unit]
+Description="Run gotty as Web console."
+
+[Service]
+ExecStart=/opt/gotty.sh
+Restart=always
+Type=simple
+User=guest
+
+[Install]
+WantedBy=multi-user.target

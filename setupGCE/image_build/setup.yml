@@ -1,0 +1,74 @@
+---
+- hosts: all
+  become: true
+  environment:
+    GOPATH: "{{ ansible_env.HOME }}/go"
+    PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
+  vars:
+    go_version: '1.11.2'
+  tasks:
+    ### prepare utils ###
+    - name: get aptitude
+      apt:
+        name: aptitude
+        state: present
+    - name: update apt
+      apt:
+        name: '*'
+        state: latest
+    - name: prepare for docker installation
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - 'apt-transport-https'
+        - 'ca-certificates'
+        - 'curl'
+        - 'gnupg2'
+        - 'software-properties-common'
+        - 'git'
+    ### setup docker ###
+    - name: add pgp key for the official docker repository
+      shell: 'curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -'
+    - name: add docker repository to apt
+      apt_repository:
+        repo: "deb https://download.docker.com/linux/debian stretch stable"
+        state: present
+    - name: update apt
+      apt:
+        name: '*'
+        state: latest
+    - name: install docker-ce
+      apt:
+        name: 'docker-ce'
+        update_cache: yes
+        state: present
+    - name: enable dockerd
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+    ### setup gotty ###
+    - name: install golang
+      shell: |
+        curl -o go.tar.gz https://dl.google.com/go/go{{ go_version }}.linux-amd64.tar.gz 
+        sudo tar -C /usr/local -xzf go.tar.gz 
+    - name: install and build gotty
+      shell: |
+        go get -u github.com/yudai/gotty
+        go build -o gotty github.com/yudai/gotty
+        sudo mv gotty /opt/
+    - name: setup gotty service
+      copy:
+        src: "./assets/{{ item.file }}"
+        dest: "{{ item.dest_path }}"
+        mode: 0755
+      with_items:
+        - { file: 'gotty.sh', dest_path: '/opt' }
+        - { file: 'gotty.service', dest_path: '/etc/systemd/system' }
+    - name: enable gotty
+      systemd:
+        name: gotty.service
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

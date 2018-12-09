@@ -1,0 +1,20 @@
+{
+  "builders": [
+    {
+      "name": "gcp-image",
+      "type": "googlecompute",
+      "account_file": "../credentials/lectureinturn.json",
+      "project_id": "lectureinturn",
+      "source_image": "debian-9-stretch-v20181113",
+      "ssh_username": "user",
+      "zone": "us-east1-d"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible",
+      "playbook_file": "./setup.yml",
+      "extra_arguments": [ "-v" ]
+    }
+  ]
+}
