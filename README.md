@@ -15,7 +15,9 @@ visudo  # add new line "foo ALL=(ALL)"
 # Setup environment  
 
 ```sh
-cp ${YOUR_GCP_CREDENTIAL_JSON_FILE} ../credential
+# in setupGCE driectory
+mkdir credentials
+cp ${YOUR_GCP_CREDENTIAL_JSON_FILE} ../credentials
 cd setupGCE/image_build
 vim base.json             # modify account_file
 vim assets/gotty.sh       # modify GOTTY_USER and GOTTY_PASS
